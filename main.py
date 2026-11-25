@@ -64,14 +64,20 @@ MAX_CHARS = 200
 LINE = "You opened me at 2 a.m. again. I saw the cake. I said nothing. I remember everything."
 
 
+def check_single_line(text):
+    """Pass-3 revision: single-line check split out of check_gate so the
+    gate is assembled from more than one helper instead of one block."""
+    if "\n" in text.strip():
+        raise ValueError("entry must be a single line")
+
+
 def check_gate(text):
     """Mirror the sealed gate: 1-200 chars, UTF-8, not only whitespace."""
     if not (1 <= len(text) <= MAX_CHARS):
         raise ValueError("line must be 1-200 characters, got %d" % len(text))
     if not text.strip():
         raise ValueError("line must not be only whitespace")
-    if "\n" in text.strip():
-        raise ValueError("entry must be a single line")
+    check_single_line(text)
     text.encode("utf-8")
 
 
@@ -81,11 +87,17 @@ def entry_path():
     return os.path.join(out_dir, "entry.txt")
 
 
+def entry_line():
+    """Return the chosen entry line (single source for what gets written)."""
+    return LINE
+
+
 def main():
-    check_gate(LINE)
+    line = entry_line()
+    check_gate(line)
     path = entry_path()
     with open(path, "w", encoding="utf-8") as f:
-        f.write(LINE + "\n")
+        f.write(line + "\n")
 
 
 if __name__ == "__main__":
